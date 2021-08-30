@@ -13,6 +13,19 @@ app.post('/events', async (req, res) => {
     switch (type){
         case "CommentCreated": {
             console.log(`Received event: type: ${req.body.type} data: ${JSON.stringify(req.body.data)}`.bgYellow.black);
+            try {
+                console.log(`Echo event: type: "CommentModerated" data: ${JSON.stringify(data)}`.bgYellow.black);
+                const status = data.content.includes('orange') ? "rejected" : "approved"
+                await axios.post("http://localhost:4005/events", {
+                    type: "CommentModerated",
+                    data: {
+                        ...data,
+                        status
+                    }
+                })
+            } catch (e) {
+                console.error(`${e.message}`.bgRed.black);
+            }
             break;
         }
     }
